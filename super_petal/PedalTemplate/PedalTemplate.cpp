@@ -1,9 +1,9 @@
-// Basic Template for DaisyPetal
-#include "daisy_petal.h"
+// Basic Template for SuperPetal
+#include "super_petal.h"
 
 using namespace daisy;
 
-DaisyPetal hw;
+SuperPetal hw;
 
 void AudioCallback(float *in, float *out, size_t size)
 {

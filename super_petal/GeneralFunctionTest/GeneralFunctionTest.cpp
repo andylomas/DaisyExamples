@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "daisy_petal.h"
+#include "super_petal.h"
 #include "daisysp.h"
 #include "fatfs.h"
 
@@ -20,7 +20,7 @@ void UpdateUsb(int sd_sta);
 void UpdateLeds();
 
 // Declare a local daisy_petal for hardware access
-DaisyPetal hw;
+SuperPetal hw;
 // Handler for SD Card Hardware
 SdmmcHandler sd;
 
@@ -158,7 +158,7 @@ void UpdateUsb(int sd_sta)
             "{%s%d, %d},",
             KNOB_ID,
             i + 1,
-            (int)(hw.GetKnobValue(static_cast<DaisyPetal::Knob>(i)) * 1000.f));
+            (int)(hw.GetKnobValue(static_cast<SuperPetal::Knob>(i)) * 1000.f));
         strcat(catbuff, buff);
     }
     // Expression
@@ -197,7 +197,7 @@ void UpdateLeds()
         total        = 511;
         base         = total / hw.FOOTSWITCH_LED_LAST;
         float bright = (float)((now + (i * base)) & total) / (float)total;
-        hw.SetFootswitchLed(static_cast<DaisyPetal::FootswitchLed>(i), bright);
+        hw.SetFootswitchLed(static_cast<SuperPetal::FootswitchLed>(i), bright);
     }
     // And now the ring
     for(size_t i = 0; i < hw.RING_LED_LAST; i++)
@@ -248,7 +248,7 @@ void UpdateLeds()
             default: rb = gb = bb = bright; break;
         }
 
-        hw.SetRingLed(static_cast<DaisyPetal::RingLed>(i), rb, gb, bb);
+        hw.SetRingLed(static_cast<SuperPetal::RingLed>(i), rb, gb, bb);
     }
     hw.UpdateLeds();
 }

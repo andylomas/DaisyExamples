@@ -1,11 +1,11 @@
-#include "daisy_petal.h"
+#include "super_petal.h"
 #include "daisysp.h"
 
 using namespace daisy;
 using namespace daisysp;
 
 // Declare a local daisy_petal for hardware access
-DaisyPetal hw;
+SuperPetal hw;
 
 Parameter vtime, vfreq, vsend;
 bool      bypass;
@@ -19,8 +19,8 @@ void callback(float *in, float *out, size_t size)
     verb.SetFeedback(vtime.Process());
     verb.SetLpFreq(vfreq.Process());
     vsend.Process(); // Process Send to use later
-    //bypass = hw.switches[DaisyPetal::SW_5].Pressed();
-    if(hw.switches[DaisyPetal::SW_1].RisingEdge())
+    //bypass = hw.switches[SuperPetal::SW_5].Pressed();
+    if(hw.switches[SuperPetal::SW_1].RisingEdge())
         bypass = !bypass;
     for(size_t i = 0; i < size; i += 2)
     {
@@ -60,8 +60,8 @@ int main(void)
     {
         // Do Stuff InfInitely Here
         dsy_system_delay(10);
-        hw.ClearLeds();
-        hw.SetFootswitchLed(hw.FOOTSWITCH_LED_1, bypass ? 0.0f : 1.0f);
-        hw.UpdateLeds();
+        // hw.ClearLeds();
+        // hw.SetFootswitchLed(hw.FOOTSWITCH_LED_1, bypass ? 0.0f : 1.0f);
+        // hw.UpdateLeds();
     }
 }

@@ -1,10 +1,10 @@
 #include "daisysp.h"
-#include "daisy_petal.h"
+#include "super_petal.h"
 
 using namespace daisysp;
 using namespace daisy;
 
-static DaisyPetal petal;
+static SuperPetal petal;
 
 float hardClip(float in)
 {
@@ -72,15 +72,15 @@ int main(void)
     while(1)
     {
         //LED stuff
-        petal.SetFootswitchLed((DaisyPetal::FootswitchLed)0, !bypassSoft);
-        petal.SetFootswitchLed((DaisyPetal::FootswitchLed)1, !bypassHard);
+        //petal.SetFootswitchLed((SuperPetal::FootswitchLed)0, !bypassSoft);
+        //petal.SetFootswitchLed((SuperPetal::FootswitchLed)1, !bypassHard);
 
-        for(int i = 0; i < 8; i++)
-        {
-            petal.SetRingLed((DaisyPetal::RingLed)i, 1.f, 0.f, 0.f);
-        }
+        //for(int i = 0; i < 8; i++)
+        //{
+        //    petal.SetRingLed((SuperPetal::RingLed)i, 1.f, 0.f, 0.f);
+        //}
 
-        petal.UpdateLeds();
+        //petal.UpdateLeds();
         dsy_system_delay(6);
     }
 }

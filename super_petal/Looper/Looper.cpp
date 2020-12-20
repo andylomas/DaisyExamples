@@ -1,12 +1,12 @@
 #include "daisysp.h"
-#include "daisy_petal.h"
+#include "super_petal.h"
 
 #define MAX_SIZE (48000 * 60 * 5) // 5 minutes of floats at 48 khz
 
 using namespace daisysp;
 using namespace daisy;
 
-static DaisyPetal petal;
+static SuperPetal petal;
 
 bool first = true;  //first loop (sets length)
 bool rec   = false; //currently recording
@@ -53,9 +53,9 @@ int main(void)
     while(1)
     {
         //leds
-        petal.SetFootswitchLed((DaisyPetal::FootswitchLed)1, play);
-        petal.SetFootswitchLed((DaisyPetal::FootswitchLed)0, rec);
-        petal.UpdateLeds();
+        //petal.SetFootswitchLed((SuperPetal::FootswitchLed)1, play);
+        //petal.SetFootswitchLed((SuperPetal::FootswitchLed)0, rec);
+        //petal.UpdateLeds();
         dsy_system_delay(16); // 60Hz
     }
 }

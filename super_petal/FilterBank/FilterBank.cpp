@@ -1,11 +1,11 @@
 #include "daisysp.h"
-#include "daisy_petal.h"
+#include "super_petal.h"
 #include <string>
 
 using namespace daisy;
 using namespace daisysp;
 
-DaisyPetal petal;
+SuperPetal petal;
 int        freqs[8];
 
 int bank;
@@ -117,7 +117,7 @@ int main(void)
     petal.StartAudio(AudioCallback);
     while(1)
     {
-        UpdateLeds();
+        //UpdateLeds();
         dsy_system_delay(6);
     }
 }
@@ -152,20 +152,20 @@ void UpdateLeds()
 {
     for(int i = 0; i < 4; i++)
     {
-        petal.SetRingLed((DaisyPetal::RingLed)i,
+        petal.SetRingLed((SuperPetal::RingLed)i,
                          filters[i].amp,
                          (bank == 0) * filters[i].amp,
                          filters[i].amp);
     }
     for(int i = 4; i < 8; i++)
     {
-        petal.SetRingLed((DaisyPetal::RingLed)i,
+        petal.SetRingLed((SuperPetal::RingLed)i,
                          filters[i].amp,
                          (bank == 1) * filters[i].amp,
                          filters[i].amp);
     }
 
-    petal.SetFootswitchLed(DaisyPetal::FOOTSWITCH_LED_1, !passthru);
+    petal.SetFootswitchLed(SuperPetal::FOOTSWITCH_LED_1, !passthru);
 
     petal.UpdateLeds();
 }

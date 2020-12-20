@@ -1,10 +1,10 @@
-#include "daisy_petal.h"
+#include "super_petal.h"
 #include "daisysp.h"
 
 using namespace daisy;
 using namespace daisysp;
 
-DaisyPetal petal;
+SuperPetal petal;
 Comb       comb;
 Oscillator lfo;
 CrossFade  fader;
@@ -65,18 +65,18 @@ int main(void)
     petal.StartAdc();
     petal.StartAudio(AudioCallback);
 
-    int i = 0;
+    //int i = 0;
     while(1)
     {
-        petal.ClearLeds();
+        //petal.ClearLeds();
 
-        petal.SetFootswitchLed((DaisyPetal::FootswitchLed)0, !bypassOn);
+        //petal.SetFootswitchLed((SuperPetal::FootswitchLed)0, !bypassOn);
 
-        petal.SetRingLed((DaisyPetal::RingLed)i, 0, 1, 1);
-        i++;
-        i %= 8;
+        //petal.SetRingLed((SuperPetal::RingLed)i, 0, 1, 1);
+        //i++;
+        //i %= 8;
 
-        petal.UpdateLeds();
+        //petal.UpdateLeds();
         dsy_system_delay(60);
     }
 }

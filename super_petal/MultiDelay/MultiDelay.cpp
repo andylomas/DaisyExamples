@@ -1,5 +1,5 @@
 #include "daisysp.h"
-#include "daisy_petal.h"
+#include "super_petal.h"
 #include <string>
 
 #define MAX_DELAY static_cast<size_t>(48000 * 1.f)
@@ -7,7 +7,7 @@
 using namespace daisy;
 using namespace daisysp;
 
-DaisyPetal petal;
+SuperPetal petal;
 
 DelayLine<float, MAX_DELAY> DSY_SDRAM_BSS delMems[3];
 
@@ -94,27 +94,27 @@ int main(void)
     petal.StartAudio(AudioCallback);
     while(1)
     {
-        int32_t whole;
-        float   frac;
-        whole = (int32_t)((float)drywet / 12.5f);
-        frac  = (float)drywet / 12.5f - whole;
-        petal.ClearLeds();
+        // int32_t whole;
+        // float   frac;
+        // whole = (int32_t)((float)drywet / 12.5f);
+        // frac  = (float)drywet / 12.5f - whole;
+        // petal.ClearLeds();
 
-        // Set full bright
-        for(int i = 0; i < whole; i++)
-        {
-            petal.SetRingLed(
-                static_cast<DaisyPetal::RingLed>(i), 0.f, 0.f, 1.f);
-        }
+        // // Set full bright
+        // for(int i = 0; i < whole; i++)
+        // {
+        //     petal.SetRingLed(
+        //         static_cast<SuperPetal::RingLed>(i), 0.f, 0.f, 1.f);
+        // }
 
-        // Set Frac
-        if(whole < 7 && whole > 0)
-            petal.SetRingLed(
-                static_cast<DaisyPetal::RingLed>(whole - 1), 0.f, 0.f, frac);
+        // // Set Frac
+        // if(whole < 7 && whole > 0)
+        //     petal.SetRingLed(
+        //         static_cast<SuperPetal::RingLed>(whole - 1), 0.f, 0.f, frac);
 
-        // Update Pass thru
-        petal.SetFootswitchLed(DaisyPetal::FOOTSWITCH_LED_1, passThruOn);
-        petal.UpdateLeds();
+        // // Update Pass thru
+        // petal.SetFootswitchLed(SuperPetal::FOOTSWITCH_LED_1, passThruOn);
+        // petal.UpdateLeds();
         dsy_system_delay(6);
     }
 }
