@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "building examples:"
 start_dir=$PWD
-example_dirs=( DaisySP/examples seed pod patch petal field versio )
+example_dirs=( DaisySP/examples seed pod patch petal field versio super_petal )
 for e in ${example_dirs[@]}; do
     for d in $e/*/; do
         echo "building $d"
