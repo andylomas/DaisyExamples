@@ -35,7 +35,19 @@ int main(void)
     hw.Init();
     hw.StartAdc();
     hw.StartAudio(AudioCallback);
+
+    hw.lcd.clear();
+    hw.lcd.setCursor(0, 0);
+    char message[256];
+    sprintf(message, "Yay!");
+    hw.lcd.print(message);
+
     while(1) {
+        hw.lcd.setCursor(0, 0);
+        char message[256];
+        sprintf(message, "Yay!");
+        hw.lcd.print(message);
+
         for (uint8_t i = 0; i < 4; i++)
         {
             uint8_t state = switch_state[i] % 8;
