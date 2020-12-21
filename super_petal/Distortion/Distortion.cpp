@@ -26,12 +26,12 @@ static void AudioCallback(float **in, float **out, size_t size)
     petal.ProcessAnalogControls();
     petal.ProcessDigitalControls();
 
-    float Pregain = petal.knob[2].Process() * 10 + 1.2;
-    float Gain    = petal.knob[3].Process() * 100 + 1.2;
-    float drywet  = petal.knob[4].Process();
+    float Pregain = petal.knob[0].Process() * 10 + 1.2;
+    float Gain    = petal.knob[4].Process() * 100 + 1.2;
+    float drywet  = petal.knob[8].Process();
 
-    bypassSoft = petal.switches[0].RisingEdge() ? !bypassSoft : bypassSoft;
-    bypassHard = petal.switches[1].RisingEdge() ? !bypassHard : bypassHard;
+    bypassSoft = petal.switches[0].EitherEdge() ? !bypassSoft : bypassSoft;
+    bypassHard = petal.switches[1].EitherEdge() ? !bypassHard : bypassHard;
 
     for(size_t i = 0; i < size; i++)
     {
