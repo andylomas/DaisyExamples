@@ -46,7 +46,7 @@ int main(void)
     lfoAmpParam.Init(sp.knob[1], 0, 50, Parameter::LINEAR);
     combFreqParam.Init(sp.knob[2], 25, 300, Parameter::LOGARITHMIC);
     combRevParam.Init(sp.knob[3], 0, 1, Parameter::LINEAR);
-    faderPosParam.Init(sp.knob[4], 0, 1, Parameter::LINEAR);
+    faderPosParam.Init(sp.knob[8], 0, 1, Parameter::LINEAR);
 
     lfo.Init(samplerate);
     lfo.SetAmp(1);

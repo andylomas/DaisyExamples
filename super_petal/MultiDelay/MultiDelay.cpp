@@ -131,7 +131,7 @@ void ProcessControls()
     drywet = petal.knob[8].Process();
 
     //footswitch
-    if(petal.switches[0].RisingEdge())
+    if(petal.switches[0].EitherEdge())
     {
         passThruOn = !passThruOn;
     }

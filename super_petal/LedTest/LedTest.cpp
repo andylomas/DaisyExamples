@@ -39,23 +39,24 @@ int main(void)
     sp.lcd.clear();
     sp.lcd.setCursor(0, 0);
     char message[256];
-    sprintf(message, "Yay!");
+    sprintf(message, "Yay! wibble flop");
     sp.lcd.print(message);
 
+    int i = 0;
     while(1) {
-        sp.lcd.setCursor(0, 0);
+        sp.lcd.setCursor(0, 1);
         char message[256];
-        sprintf(message, "Yay!");
+        sprintf(message, "%d", i);
         sp.lcd.print(message);
 
         for (uint8_t i = 0; i < 4; i++)
         {
             uint8_t state = switch_state[i] % 8;
-            //sp.led_controller.Set(i, state & 1, (state >> 1) & 1, (state >> 2) & 1);
             sp.led_controller.SetValue(i, state);
             sp.led_controller.SetValue(i + 4, sp.encoder[i].Value());
         }
         sp.led_controller.Update();
-        dsy_system_delay(6);
+        //dsy_system_delay(6);
+        i++;
     }
 }

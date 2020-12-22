@@ -7,7 +7,7 @@
 using namespace daisysp;
 using namespace daisy;
 
-static SuperPetal petal;
+static SuperPetal sp;
 
 static ReverbSc                                  rev;
 static DelayLine<float, MAX_DELAY> DSY_SDRAM_BSS dell;
@@ -98,17 +98,23 @@ int main(void)
     float sample_rate;
 
     //Inits and sample rate
-    petal.Init();
-    sample_rate = petal.AudioSampleRate();
+    sp.Init();
+    sample_rate = sp.AudioSampleRate();
     rev.Init(sample_rate);
     dell.Init();
     delr.Init();
 
     //set parameters
-    reverbLpParam.Init(petal.knob[0], 400, 22000, Parameter::LOGARITHMIC);
-    deltime.Init(
-        petal.knob[2], sample_rate * .05, MAX_DELAY, deltime.LOGARITHMIC);
-    crushrate.Init(petal.knob[4], 1, 50, crushrate.LOGARITHMIC);
+    reverbLpParam.Init(sp.knob[0], 400, 22000, Parameter::LOGARITHMIC);
+    deltime.Init(sp.knob[1], sample_rate * .05, MAX_DELAY, deltime.LOGARITHMIC);
+    crushrate.Init(sp.knob[2], 1, 50, crushrate.LOGARITHMIC);
+
+    for (uint8_t i=0; i < 4; i++)
+    {
+        sp.encoder[i].SetRange(0, 20);
+        sp.encoder[i].SetWrapMode(false);
+        sp.encoder[i].SetValue(12);
+    }
 
     //reverb parameters
     rev.SetLpFreq(18000.0f);
@@ -134,12 +140,12 @@ int main(void)
     dryWetMode = CRUSH;
 
     // start callback
-    petal.StartAdc();
-    petal.StartAudio(AudioCallback);
+    sp.StartAdc();
+    sp.StartAudio(AudioCallback);
 
     while(1)
     {
-        //UpdateLeds();
+        UpdateLeds();
         dsy_system_delay(6);
     }
 }
@@ -147,74 +153,92 @@ int main(void)
 void UpdateKnobs()
 {
     rev.SetLpFreq(reverbLpParam.Process());
-    rev.SetFeedback(petal.knob[1].Process());
+    rev.SetFeedback(sp.knob[4].Process());
 
     delayTarget = deltime.Process();
-    feedback    = petal.knob[3].Process();
+    feedback    = sp.knob[5].Process();
 
     crushmod = (int)crushrate.Process();
 
-    wah[0].SetWah(petal.knob[5].Process());
-    wah[1].SetWah(petal.knob[5].Process());
+    wah[0].SetWah(sp.knob[3].Process());
+    wah[1].SetWah(sp.knob[3].Process());
+    wah[0].SetLevel(sp.knob[7].Process());
+    wah[1].SetLevel(sp.knob[7].Process());
+
+    dryWet[ALL] = sp.knob[8].Process();
 }
 
-void UpdateEncoder()
+void UpdateEncoders()
 {
-    //press
-    if(petal.encoder.RisingEdge())
-    {
-        dryWetMode = (effectTypes)(dryWetMode + 1);
-        dryWetMode = (effectTypes)(dryWetMode % LAST);
-    }
-
     //turn
-    dryWet[dryWetMode] += petal.encoder.Increment() * .05f;
-    dryWet[dryWetMode] = dryWet[dryWetMode] > 1.0f ? 1.0f : dryWet[dryWetMode];
-    dryWet[dryWetMode] = dryWet[dryWetMode] < 0.0f ? 0.0f : dryWet[dryWetMode];
+    dryWet[REV] = 0.05f * sp.encoder[0].Value();
+    dryWet[DEL] = 0.05f * sp.encoder[1].Value();
+    dryWet[CRUSH] = 0.05f * sp.encoder[2].Value();
+    dryWet[WAH] = 0.05f * sp.encoder[3].Value();
 }
 
 void UpdateLeds()
 {
-    petal.ClearLeds();
-
     //footswitch leds
-    petal.SetFootswitchLed((SuperPetal::FootswitchLed)0, effectOn[REV]);
-    petal.SetFootswitchLed((SuperPetal::FootswitchLed)1, effectOn[DEL]);
-    petal.SetFootswitchLed((SuperPetal::FootswitchLed)2, effectOn[CRUSH]);
-    petal.SetFootswitchLed((SuperPetal::FootswitchLed)3, effectOn[WAH]);
+    sp.SetFootswitchLed(0, effectOn[REV]);
+    sp.SetFootswitchLed(1, effectOn[DEL]);
+    sp.SetFootswitchLed(2, effectOn[CRUSH]);
+    sp.SetFootswitchLed(3, effectOn[WAH]);
 
-
-    //ring leds
-    int32_t whole;
-    float   frac;
-    whole = (int32_t)(dryWet[dryWetMode] / .125f);
-    frac  = dryWet[dryWetMode] / .125f - whole;
-
-    // Set full bright
-    for(int i = 0; i < whole; i++)
+    for (uint8_t i = 0; i < 4; i++)
     {
-        petal.SetRingLed(
-            static_cast<SuperPetal::RingLed>(i),
-            (dryWetMode == CRUSH || dryWetMode == REV || dryWetMode == ALL)
-                * 1.f,                                      //red
-            (dryWetMode == WAH || dryWetMode == ALL) * 1.f, //green
-            (dryWetMode == DEL || dryWetMode == REV || dryWetMode == ALL)
-                * 1.f); //blue
+        float val;
+        switch (i)
+        {
+        case 0:
+            val = dryWet[REV];
+            break;
+        case 1:
+            val = dryWet[DEL];
+            break;
+        case 2:
+            val = dryWet[CRUSH];
+            break;
+        case 3:
+            val = dryWet[WAH];
+            break; 
+        }
+
+        if (val == 0.0f)
+        {
+            sp.SetEncoderLed(i, 0, 0, 0);
+        }
+        else if (val <= 0.1f)
+        {
+            sp.SetEncoderLed(i, 0, 0, 1);
+        }
+        else if (val <= 0.2f)
+        {
+            sp.SetEncoderLed(i, 0, 1, 0);
+        }
+        else if (val <= 0.4f)
+        {
+            sp.SetEncoderLed(i, 0, 1, 1);
+        }
+        else if (val <= 0.6f)
+        {
+            sp.SetEncoderLed(i, 1, 1, 1);
+        }
+        else if (val <= 0.8f)
+        {
+            sp.SetEncoderLed(i, 1, 1, 0);
+        }
+        else if (val <= 0.9f)
+        {
+            sp.SetEncoderLed(i, 1, 0, 1);
+        }
+        else
+        {
+            sp.SetEncoderLed(i, 1, 0, 0);
+        }
     }
 
-    // Set Frac
-    if(whole < 7 && whole > 0)
-    {
-        petal.SetRingLed(
-            static_cast<SuperPetal::RingLed>(whole - 1),
-            (dryWetMode == CRUSH || dryWetMode == REV || dryWetMode == ALL)
-                * frac,                                      //red
-            (dryWetMode == WAH || dryWetMode == ALL) * frac, //green
-            (dryWetMode == DEL || dryWetMode == REV || dryWetMode == ALL)
-                * frac); //blue
-    }
-
-    petal.UpdateLeds();
+    sp.UpdateLeds();
 }
 
 void UpdateSwitches()
@@ -222,24 +246,22 @@ void UpdateSwitches()
     //turn the effect on or off if a footswitch is pressed
 
     effectOn[REV]
-        = petal.switches[0].EitherEdge() ? !effectOn[REV] : effectOn[REV];
+        = sp.switches[0].EitherEdge() ? !effectOn[REV] : effectOn[REV];
     effectOn[DEL]
-        = petal.switches[1].EitherEdge() ? !effectOn[DEL] : effectOn[DEL];
+        = sp.switches[1].EitherEdge() ? !effectOn[DEL] : effectOn[DEL];
     effectOn[CRUSH]
-        = petal.switches[2].EitherEdge() ? !effectOn[CRUSH] : effectOn[CRUSH];
+        = sp.switches[2].EitherEdge() ? !effectOn[CRUSH] : effectOn[CRUSH];
     effectOn[WAH]
-        = petal.switches[3].EitherEdge() ? !effectOn[WAH] : effectOn[WAH];
+        = sp.switches[3].EitherEdge() ? !effectOn[WAH] : effectOn[WAH];
 }
 
 void Controls()
 {
-    petal.ProcessAnalogControls();
-    petal.ProcessDigitalControls();
+    sp.ProcessAnalogControls();
+    sp.ProcessDigitalControls();
 
     UpdateKnobs();
-
-    UpdateEncoder();
-
+    UpdateEncoders();
     UpdateSwitches();
 }
 

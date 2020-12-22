@@ -99,7 +99,6 @@ void InitFilters(float samplerate)
     }
 }
 
-
 void UpdateLeds();
 
 int main(void)

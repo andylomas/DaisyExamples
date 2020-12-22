@@ -15,7 +15,7 @@ Parameter flanger_rate_param;
 Parameter flanger_delay_param;
 Parameter flanger_depth_param;
 Parameter flanger_feedback_param;
-Parameter flanger_mix;
+Parameter flanger_mix_param;
 
 Oscillator flanger_lfo;
 
@@ -83,15 +83,14 @@ int main(void)
     sp.Init();
     float sample_rate = sp.AudioSampleRate();
 
-    sp.encoder[0].SetRange(0, NUM_WAVEFORMS);
+    sp.encoder[0].SetRange(0, NUM_WAVEFORMS-1);
     sp.encoder[0].ResetOnPressed();
 
     flanger_rate_param.Init(sp.knob[0], 0.2f, 10.0f, Parameter::LOGARITHMIC);
     flanger_delay_param.Init(sp.knob[1], 0, 0.002f * sample_rate, Parameter::LINEAR);
-    flanger_delay_param.Init(sp.knob[1], 0, 100, Parameter::LINEAR);
     flanger_depth_param.Init(sp.knob[2], 0, 1, Parameter::LINEAR);
     flanger_feedback_param.Init(sp.knob[3], 0, 1, Parameter::LINEAR);
-    flanger_mix.Init(sp.knob[8], 0, 1, Parameter::LINEAR);
+    flanger_mix_param.Init(sp.knob[8], 0, 1, Parameter::LINEAR);
 
     flanger_lfo.Init(sample_rate);
     flanger_lfo.SetAmp(1.0f);
