@@ -5,7 +5,7 @@
 using namespace daisy;
 using namespace daisysp;
 
-SuperPetal petal;
+SuperPetal sp;
 int        freqs[8];
 
 int bank;
@@ -105,42 +105,42 @@ void UpdateLeds();
 int main(void)
 {
     float samplerate;
-    petal.Init(); // Initialize hardware (daisy seed, and petal)
-    samplerate = petal.AudioSampleRate();
+    sp.Init(); // Initialize hardware (daisy seed, and sp)
+    samplerate = sp.AudioSampleRate();
 
     InitFreqs();
     InitFilters(samplerate);
     bank     = 0;
     passthru = false;
 
-    petal.StartAdc();
-    petal.StartAudio(AudioCallback);
+    sp.StartAdc();
+    sp.StartAudio(AudioCallback);
     while(1)
     {
-        //UpdateLeds();
+        UpdateLeds();
         dsy_system_delay(6);
     }
 }
 
 void UpdateControls()
 {
-    petal.ProcessAnalogControls();
-    petal.ProcessDigitalControls();
+    sp.ProcessAnalogControls();
+    sp.ProcessDigitalControls();
 
     //encoder
-    bank += petal.encoder.Increment();
+    bank += sp.encoder[0].Increment();
     bank = (bank % 2 + 2) % 2;
 
-    bank = petal.encoder.RisingEdge() ? 0 : bank;
+    bank = sp.encoder[0].RisingEdge() ? 0 : bank;
 
     // Toggle Pass thru
-    if(petal.switches[petal.SW_1].RisingEdge())
+    if(sp.switches[0].EitherEdge())
         passthru = !passthru;
 
     //controls
     for(int i = 0; i < 4; i++)
     {
-        float val = petal.knob[i + 2].Process();
+        float val = sp.knob[i].Process();
         if(condUpdates[i].Process(val))
         {
             filters[i + bank * 4].amp = val;
@@ -152,20 +152,20 @@ void UpdateLeds()
 {
     for(int i = 0; i < 4; i++)
     {
-        petal.SetRingLed((SuperPetal::RingLed)i,
+        sp.SetLed(i,
                          filters[i].amp,
                          (bank == 0) * filters[i].amp,
                          filters[i].amp);
     }
     for(int i = 4; i < 8; i++)
     {
-        petal.SetRingLed((SuperPetal::RingLed)i,
+        sp.SetLed(i,
                          filters[i].amp,
                          (bank == 1) * filters[i].amp,
                          filters[i].amp);
     }
 
-    petal.SetFootswitchLed(SuperPetal::FOOTSWITCH_LED_1, !passthru);
+    sp.SetFootswitchLed(0, !passthru);
 
-    petal.UpdateLeds();
+    sp.UpdateLeds();
 }

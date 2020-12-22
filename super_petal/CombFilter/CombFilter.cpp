@@ -4,7 +4,7 @@
 using namespace daisy;
 using namespace daisysp;
 
-SuperPetal petal;
+SuperPetal sp;
 Comb       comb;
 Oscillator lfo;
 CrossFade  fader;
@@ -39,14 +39,14 @@ void AudioCallback(float **in, float **out, size_t size)
 int main(void)
 {
     float samplerate;
-    petal.Init();
-    samplerate = petal.AudioSampleRate();
+    sp.Init();
+    samplerate = sp.AudioSampleRate();
 
-    lfoFreqParam.Init(petal.knob[0], 0, 2, Parameter::LINEAR);
-    lfoAmpParam.Init(petal.knob[1], 0, 50, Parameter::LINEAR);
-    combFreqParam.Init(petal.knob[2], 25, 300, Parameter::LOGARITHMIC);
-    combRevParam.Init(petal.knob[3], 0, 1, Parameter::LINEAR);
-    faderPosParam.Init(petal.knob[4], 0, 1, Parameter::LINEAR);
+    lfoFreqParam.Init(sp.knob[0], 0, 2, Parameter::LINEAR);
+    lfoAmpParam.Init(sp.knob[1], 0, 50, Parameter::LINEAR);
+    combFreqParam.Init(sp.knob[2], 25, 300, Parameter::LOGARITHMIC);
+    combRevParam.Init(sp.knob[3], 0, 1, Parameter::LINEAR);
+    faderPosParam.Init(sp.knob[4], 0, 1, Parameter::LINEAR);
 
     lfo.Init(samplerate);
     lfo.SetAmp(1);
@@ -62,21 +62,14 @@ int main(void)
 
     fader.Init();
 
-    petal.StartAdc();
-    petal.StartAudio(AudioCallback);
+    sp.StartAdc();
+    sp.StartAudio(AudioCallback);
 
-    //int i = 0;
     while(1)
     {
-        //petal.ClearLeds();
-
-        //petal.SetFootswitchLed((SuperPetal::FootswitchLed)0, !bypassOn);
-
-        //petal.SetRingLed((SuperPetal::RingLed)i, 0, 1, 1);
-        //i++;
-        //i %= 8;
-
-        //petal.UpdateLeds();
+        sp.ClearLeds();
+        sp.SetFootswitchLed(0, !bypassOn);
+        sp.UpdateLeds();
         dsy_system_delay(60);
     }
 }
@@ -84,7 +77,7 @@ int main(void)
 
 void UpdateControls()
 {
-    petal.ProcessDigitalControls();
+    sp.ProcessDigitalControls();
 
     //knobs
     lfo.SetFreq(lfoFreqParam.Process());
@@ -101,7 +94,7 @@ void UpdateControls()
     }
 
     //bypass switch
-    if(petal.switches[0].RisingEdge())
+    if(sp.switches[0].EitherEdge())
     {
         bypassOn = !bypassOn;
     }

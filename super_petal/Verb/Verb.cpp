@@ -5,7 +5,7 @@ using namespace daisy;
 using namespace daisysp;
 
 // Declare a local daisy_petal for hardware access
-SuperPetal hw;
+SuperPetal sp;
 
 Parameter vtime, vfreq, vsend;
 bool      bypass;
@@ -15,13 +15,11 @@ ReverbSc  verb;
 void callback(float *in, float *out, size_t size)
 {
     float dryl, dryr, wetl, wetr, sendl, sendr;
-    hw.ProcessDigitalControls();
+    sp.ProcessDigitalControls();
     verb.SetFeedback(vtime.Process());
     verb.SetLpFreq(vfreq.Process());
     vsend.Process(); // Process Send to use later
-    //bypass = hw.switches[SuperPetal::SW_5].Pressed();
-    if(hw.switches[SuperPetal::SW_1].RisingEdge())
-        bypass = !bypass;
+    bypass = sp.switches[0].Pressed();
     for(size_t i = 0; i < size; i += 2)
     {
         dryl  = in[i];
@@ -46,22 +44,22 @@ int main(void)
 {
     float samplerate;
 
-    hw.Init();
-    samplerate = hw.AudioSampleRate();
+    sp.Init();
+    samplerate = sp.AudioSampleRate();
 
-    vtime.Init(hw.knob[hw.KNOB_1], 0.6f, 0.999f, Parameter::LOGARITHMIC);
-    vfreq.Init(hw.knob[hw.KNOB_2], 500.0f, 20000.0f, Parameter::LOGARITHMIC);
-    vsend.Init(hw.knob[hw.KNOB_3], 0.0f, 1.0f, Parameter::LINEAR);
+    vtime.Init(sp.knob[0], 0.6f, 0.999f, Parameter::LOGARITHMIC);
+    vfreq.Init(sp.knob[1], 500.0f, 20000.0f, Parameter::LOGARITHMIC);
+    vsend.Init(sp.knob[8], 0.0f, 1.0f, Parameter::LINEAR);
     verb.Init(samplerate);
 
-    hw.StartAdc();
-    hw.StartAudio(callback);
+    sp.StartAdc();
+    sp.StartAudio(callback);
     while(1)
     {
         // Do Stuff InfInitely Here
         dsy_system_delay(10);
-        // hw.ClearLeds();
-        // hw.SetFootswitchLed(hw.FOOTSWITCH_LED_1, bypass ? 0.0f : 1.0f);
-        // hw.UpdateLeds();
+        sp.ClearLeds();
+        sp.SetFootswitchLed(0, !bypass);
+        sp.UpdateLeds();
     }
 }

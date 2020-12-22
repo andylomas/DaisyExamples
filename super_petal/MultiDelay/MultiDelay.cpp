@@ -47,7 +47,7 @@ static void AudioCallback(float **in, float **out, size_t size)
     for(size_t i = 0; i < size; i++)
     {
         float mix     = 0;
-        float fdrywet = passThruOn ? 0.f : (float)drywet / 100.f;
+        float fdrywet = passThruOn ? 0.f : (float)drywet;
 
         //update delayline with feedback
         for(int d = 0; d < 3; d++)
@@ -70,14 +70,12 @@ void InitDelays(float samplerate)
         delMems[i].Init();
         delays[i].del = &delMems[i];
         //3 delay times
-        params[i].Init(petal.knob[i * 2],
+        params[i].Init(petal.knob[i],
                        samplerate * .05,
                        MAX_DELAY,
                        Parameter::LOGARITHMIC);
     }
 }
-
-void UpdateOled();
 
 int main(void)
 {
@@ -103,18 +101,17 @@ int main(void)
         // // Set full bright
         // for(int i = 0; i < whole; i++)
         // {
-        //     petal.SetRingLed(
-        //         static_cast<SuperPetal::RingLed>(i), 0.f, 0.f, 1.f);
+        //     petal.SetLed(i, 0, 0, 1);
         // }
 
         // // Set Frac
         // if(whole < 7 && whole > 0)
-        //     petal.SetRingLed(
-        //         static_cast<SuperPetal::RingLed>(whole - 1), 0.f, 0.f, frac);
+        //     petal.SetLed(
+        //         whole - 1, 0, 1, 0);
 
-        // // Update Pass thru
-        // petal.SetFootswitchLed(SuperPetal::FOOTSWITCH_LED_1, passThruOn);
-        // petal.UpdateLeds();
+        // Update Pass thru
+        petal.SetFootswitchLed(0, !passThruOn);
+        petal.UpdateLeds();
         dsy_system_delay(6);
     }
 }
@@ -128,13 +125,10 @@ void ProcessControls()
     for(int i = 0; i < 3; i++)
     {
         delays[i].delayTarget = params[i].Process();
-        delays[i].feedback    = petal.knob[(i * 2) + 1].Process();
+        delays[i].feedback    = petal.knob[i + 4].Process();
     }
 
-    //encoder
-    drywet += 5 * petal.encoder.Increment();
-    drywet > 100 ? drywet = 100 : drywet = drywet;
-    drywet < 0 ? drywet = 0 : drywet = drywet;
+    drywet = petal.knob[8].Process();
 
     //footswitch
     if(petal.switches[0].RisingEdge())

@@ -4,7 +4,7 @@
 using namespace daisysp;
 using namespace daisy;
 
-static SuperPetal petal;
+static SuperPetal sp;
 
 float hardClip(float in)
 {
@@ -23,15 +23,15 @@ float softClip(float in)
 bool        bypassHard, bypassSoft;
 static void AudioCallback(float **in, float **out, size_t size)
 {
-    petal.ProcessAnalogControls();
-    petal.ProcessDigitalControls();
+    sp.ProcessAnalogControls();
+    sp.ProcessDigitalControls();
 
-    float Pregain = petal.knob[0].Process() * 10 + 1.2;
-    float Gain    = petal.knob[4].Process() * 100 + 1.2;
-    float drywet  = petal.knob[8].Process();
+    float Pregain = sp.knob[0].Process() * 10 + 1.2;
+    float Gain    = sp.knob[1].Process() * 100 + 1.2;
+    float drywet  = sp.knob[8].Process();
 
-    bypassSoft = petal.switches[0].EitherEdge() ? !bypassSoft : bypassSoft;
-    bypassHard = petal.switches[1].EitherEdge() ? !bypassHard : bypassHard;
+    bypassSoft = sp.switches[0].EitherEdge() ? !bypassSoft : bypassSoft;
+    bypassHard = sp.switches[1].EitherEdge() ? !bypassHard : bypassHard;
 
     for(size_t i = 0; i < size; i++)
     {
@@ -62,25 +62,19 @@ static void AudioCallback(float **in, float **out, size_t size)
 
 int main(void)
 {
-    petal.Init();
+    sp.Init();
 
     bypassHard = bypassSoft = false;
 
     // start callback
-    petal.StartAdc();
-    petal.StartAudio(AudioCallback);
+    sp.StartAdc();
+    sp.StartAudio(AudioCallback);
     while(1)
     {
         //LED stuff
-        //petal.SetFootswitchLed((SuperPetal::FootswitchLed)0, !bypassSoft);
-        //petal.SetFootswitchLed((SuperPetal::FootswitchLed)1, !bypassHard);
-
-        //for(int i = 0; i < 8; i++)
-        //{
-        //    petal.SetRingLed((SuperPetal::RingLed)i, 1.f, 0.f, 0.f);
-        //}
-
-        //petal.UpdateLeds();
+        sp.SetFootswitchLed(0, !bypassSoft);
+        sp.SetFootswitchLed(1, !bypassHard);
+        sp.UpdateLeds();
         dsy_system_delay(6);
     }
 }

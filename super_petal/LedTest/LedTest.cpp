@@ -3,17 +3,17 @@
 
 using namespace daisy;
 
-SuperPetal hw;
+SuperPetal sp;
 int switch_state[4];
 
 void AudioCallback(float *in, float *out, size_t size)
 {
-    hw.ProcessDigitalControls();
-    hw.ProcessAnalogControls();
+    sp.ProcessDigitalControls();
+    sp.ProcessAnalogControls();
 
     for (uint8_t i = 0; i < 4; i++)
     {
-        if (hw.switches[i].EitherEdge() ) {
+        if (sp.switches[i].EitherEdge() ) {
             switch_state[i]++;
         }
     }    
@@ -32,30 +32,30 @@ int main(void)
         switch_state[i] = 0;
     }
 
-    hw.Init();
-    hw.StartAdc();
-    hw.StartAudio(AudioCallback);
+    sp.Init();
+    sp.StartAdc();
+    sp.StartAudio(AudioCallback);
 
-    hw.lcd.clear();
-    hw.lcd.setCursor(0, 0);
+    sp.lcd.clear();
+    sp.lcd.setCursor(0, 0);
     char message[256];
     sprintf(message, "Yay!");
-    hw.lcd.print(message);
+    sp.lcd.print(message);
 
     while(1) {
-        hw.lcd.setCursor(0, 0);
+        sp.lcd.setCursor(0, 0);
         char message[256];
         sprintf(message, "Yay!");
-        hw.lcd.print(message);
+        sp.lcd.print(message);
 
         for (uint8_t i = 0; i < 4; i++)
         {
             uint8_t state = switch_state[i] % 8;
-            //hw.led_controller.Set(i, state & 1, (state >> 1) & 1, (state >> 2) & 1);
-            hw.led_controller.SetValue(i, state);
-            hw.led_controller.SetValue(i + 4, hw.encoder[i].Value());
+            //sp.led_controller.Set(i, state & 1, (state >> 1) & 1, (state >> 2) & 1);
+            sp.led_controller.SetValue(i, state);
+            sp.led_controller.SetValue(i + 4, sp.encoder[i].Value());
         }
-        hw.led_controller.Update();
+        sp.led_controller.Update();
         dsy_system_delay(6);
     }
 }
