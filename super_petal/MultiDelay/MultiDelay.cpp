@@ -7,7 +7,7 @@
 using namespace daisy;
 using namespace daisysp;
 
-SuperPetal petal;
+SuperPetal sp;
 
 DelayLine<float, MAX_DELAY> DSY_SDRAM_BSS delMems[3];
 
@@ -70,7 +70,7 @@ void InitDelays(float samplerate)
         delMems[i].Init();
         delays[i].del = &delMems[i];
         //3 delay times
-        params[i].Init(petal.knob[i],
+        params[i].Init(sp.knob[i],
                        samplerate * .05,
                        MAX_DELAY,
                        Parameter::LOGARITHMIC);
@@ -80,58 +80,58 @@ void InitDelays(float samplerate)
 int main(void)
 {
     float samplerate;
-    petal.Init(); // Initialize hardware (daisy seed, and petal)
-    samplerate = petal.AudioSampleRate();
+    sp.Init(); // Initialize hardware (daisy seed, and petal)
+    samplerate = sp.AudioSampleRate();
 
     InitDelays(samplerate);
 
     drywet     = 50;
     passThruOn = false;
 
-    petal.StartAdc();
-    petal.StartAudio(AudioCallback);
+    sp.StartAdc();
+    sp.StartAudio(AudioCallback);
     while(1)
     {
         // int32_t whole;
         // float   frac;
         // whole = (int32_t)((float)drywet / 12.5f);
         // frac  = (float)drywet / 12.5f - whole;
-        // petal.ClearLeds();
+        // sp.ClearLeds();
 
         // // Set full bright
         // for(int i = 0; i < whole; i++)
         // {
-        //     petal.SetLed(i, 0, 0, 1);
+        //     sp.SetLed(i, 0, 0, 1);
         // }
 
         // // Set Frac
         // if(whole < 7 && whole > 0)
-        //     petal.SetLed(
+        //     sp.SetLed(
         //         whole - 1, 0, 1, 0);
 
         // Update Pass thru
-        petal.SetFootswitchLed(0, !passThruOn);
-        petal.UpdateLeds();
+        sp.SetFootswitchLed(0, !passThruOn);
+        sp.UpdateLeds();
         dsy_system_delay(6);
     }
 }
 
 void ProcessControls()
 {
-    petal.ProcessAnalogControls();
-    petal.ProcessDigitalControls();
+    sp.ProcessAnalogControls();
+    sp.ProcessDigitalControls();
 
     //knobs
     for(int i = 0; i < 3; i++)
     {
         delays[i].delayTarget = params[i].Process();
-        delays[i].feedback    = petal.knob[i + 4].Process();
+        delays[i].feedback    = sp.knob[i + 4].Process();
     }
 
-    drywet = petal.knob[8].Process();
+    drywet = sp.knob[8].Process();
 
     //footswitch
-    if(petal.switches[0].EitherEdge())
+    if(sp.switches[0].RisingEdge())
     {
         passThruOn = !passThruOn;
     }

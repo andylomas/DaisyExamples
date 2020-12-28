@@ -30,8 +30,8 @@ static void AudioCallback(float **in, float **out, size_t size)
     float Gain    = sp.knob[1].Process() * 100 + 1.2;
     float drywet  = sp.knob[8].Process();
 
-    bypassSoft = sp.switches[0].EitherEdge() ? !bypassSoft : bypassSoft;
-    bypassHard = sp.switches[1].EitherEdge() ? !bypassHard : bypassHard;
+    bypassSoft = sp.switches[0].RisingEdge() ? !bypassSoft : bypassSoft;
+    bypassHard = sp.switches[1].RisingEdge() ? !bypassHard : bypassHard;
 
     for(size_t i = 0; i < size; i++)
     {

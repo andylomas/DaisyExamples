@@ -133,7 +133,7 @@ void UpdateControls()
     bank = sp.encoder[0].RisingEdge() ? 0 : bank;
 
     // Toggle Pass thru
-    if(sp.switches[0].EitherEdge())
+    if(sp.switches[0].RisingEdge())
         passthru = !passthru;
 
     //controls

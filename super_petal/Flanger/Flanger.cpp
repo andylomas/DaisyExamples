@@ -56,7 +56,7 @@ void AudioCallback(float **in, float **out, size_t size)
 
     flanger_lfo.SetFreq(flanger_rate);
 
-    bypass = sp.switches[0].EitherEdge() ? !bypass : bypass;
+    bypass = sp.switches[0].RisingEdge() ? !bypass : bypass;
 
     // Audio Loop
     for(size_t i = 0; i < size; i ++)
@@ -84,7 +84,7 @@ int main(void)
     float sample_rate = sp.AudioSampleRate();
 
     sp.encoder[0].SetRange(0, NUM_WAVEFORMS-1);
-    sp.encoder[0].ResetOnPressed();
+    sp.encoder[0].SetResetOnPressed();
 
     flanger_rate_param.Init(sp.knob[0], 0.2f, 10.0f, Parameter::LOGARITHMIC);
     flanger_delay_param.Init(sp.knob[1], 0, 0.002f * sample_rate, Parameter::LINEAR);

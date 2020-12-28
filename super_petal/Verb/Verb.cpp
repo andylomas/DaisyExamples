@@ -19,7 +19,8 @@ void callback(float *in, float *out, size_t size)
     verb.SetFeedback(vtime.Process());
     verb.SetLpFreq(vfreq.Process());
     vsend.Process(); // Process Send to use later
-    bypass = sp.switches[0].Pressed();
+    if(sp.switches[0].RisingEdge())
+        bypass = !bypass;
     for(size_t i = 0; i < size; i += 2)
     {
         dryl  = in[i];

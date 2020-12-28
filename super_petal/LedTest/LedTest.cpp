@@ -13,7 +13,7 @@ void AudioCallback(float *in, float *out, size_t size)
 
     for (uint8_t i = 0; i < 4; i++)
     {
-        if (sp.switches[i].EitherEdge() ) {
+        if (sp.switches[i].RisingEdge() ) {
             switch_state[i]++;
         }
     }    

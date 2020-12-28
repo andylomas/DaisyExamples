@@ -94,7 +94,7 @@ void UpdateControls()
     }
 
     //bypass switch
-    if(sp.switches[0].EitherEdge())
+    if(sp.switches[0].RisingEdge())
     {
         bypassOn = !bypassOn;
     }

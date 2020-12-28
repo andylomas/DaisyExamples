@@ -246,13 +246,13 @@ void UpdateSwitches()
     //turn the effect on or off if a footswitch is pressed
 
     effectOn[REV]
-        = sp.switches[0].EitherEdge() ? !effectOn[REV] : effectOn[REV];
+        = sp.switches[0].RisingEdge() ? !effectOn[REV] : effectOn[REV];
     effectOn[DEL]
-        = sp.switches[1].EitherEdge() ? !effectOn[DEL] : effectOn[DEL];
+        = sp.switches[1].RisingEdge() ? !effectOn[DEL] : effectOn[DEL];
     effectOn[CRUSH]
-        = sp.switches[2].EitherEdge() ? !effectOn[CRUSH] : effectOn[CRUSH];
+        = sp.switches[2].RisingEdge() ? !effectOn[CRUSH] : effectOn[CRUSH];
     effectOn[WAH]
-        = sp.switches[3].EitherEdge() ? !effectOn[WAH] : effectOn[WAH];
+        = sp.switches[3].RisingEdge() ? !effectOn[WAH] : effectOn[WAH];
 }
 
 void Controls()

@@ -1,7 +1,7 @@
 #include "daisy_pod.h"
 #include "daisysp.h"
 
-#define NUM_WAVEFORMS 4
+#define NUM_WAVEFORMS 8
 
 using namespace daisy;
 using namespace daisysp;
@@ -13,6 +13,10 @@ Parameter  p_freq;
 uint8_t waveforms[NUM_WAVEFORMS] = {
     Oscillator::WAVE_SIN,
     Oscillator::WAVE_TRI,
+    Oscillator::WAVE_SAW,
+    Oscillator::WAVE_RAMP,
+    Oscillator::WAVE_SQUARE,
+    Oscillator::WAVE_POLYBLEP_TRI,
     Oscillator::WAVE_POLYBLEP_SAW,
     Oscillator::WAVE_POLYBLEP_SQUARE,
 };

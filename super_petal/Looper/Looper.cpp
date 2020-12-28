@@ -6,7 +6,7 @@
 using namespace daisysp;
 using namespace daisy;
 
-static SuperPetal petal;
+static SuperPetal sp;
 
 bool first = true;  //first loop (sets length)
 bool rec   = false; //currently recording
@@ -43,19 +43,20 @@ int main(void)
 {
     // initialize petal hardware and oscillator daisysp module
 
-    petal.Init();
+    sp.Init();
     ResetBuffer();
 
     // start callback
-    petal.StartAdc();
-    petal.StartAudio(AudioCallback);
+    sp.StartAdc();
+    sp.StartAudio(AudioCallback);
 
     while(1)
     {
         //leds
-        //petal.SetFootswitchLed((SuperPetal::FootswitchLed)1, play);
-        //petal.SetFootswitchLed((SuperPetal::FootswitchLed)0, rec);
-        //petal.UpdateLeds();
+        sp.SetFootswitchLed(0, rec, 0, 0);
+        sp.SetFootswitchLed(1, 0, play, 0);
+        sp.UpdateLeds();
+        
         dsy_system_delay(16); // 60Hz
     }
 }
@@ -78,7 +79,7 @@ void ResetBuffer()
 void UpdateButtons()
 {
     //switch1 pressed
-    if(petal.switches[0].RisingEdge())
+    if(sp.switches[0].RisingEdge())
     {
         if(first && rec)
         {
@@ -93,14 +94,14 @@ void UpdateButtons()
     }
 
     //switch1 held
-    if(petal.switches[0].TimeHeldMs() >= 1000 && res)
+    if(sp.switches[0].TimeHeldMs() >= 1000 && res)
     {
         ResetBuffer();
         res = false;
     }
 
     //switch2 pressed and not empty buffer
-    if(petal.switches[1].RisingEdge() && !(!rec && first))
+    if(sp.switches[1].RisingEdge() && !(!rec && first))
     {
         play = !play;
         rec  = false;
@@ -110,10 +111,10 @@ void UpdateButtons()
 //Deals with analog controls
 void Controls()
 {
-    petal.ProcessAnalogControls();
-    petal.ProcessDigitalControls();
+    sp.ProcessAnalogControls();
+    sp.ProcessDigitalControls();
 
-    drywet = petal.knob[0].Process();
+    drywet = sp.knob[8].Process();
 
     UpdateButtons();
 }
