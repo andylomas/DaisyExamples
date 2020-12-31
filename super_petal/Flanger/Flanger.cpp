@@ -84,7 +84,7 @@ int main(void)
     float sample_rate = sp.AudioSampleRate();
 
     sp.encoder[0].SetRange(0, NUM_WAVEFORMS-1);
-    sp.encoder[0].SetResetOnPressed();
+    sp.encoder[0].ResetOnPressed();
 
     flanger_rate_param.Init(sp.knob[0], 0.2f, 10.0f, Parameter::LOGARITHMIC);
     flanger_delay_param.Init(sp.knob[1], 0, 0.002f * sample_rate, Parameter::LINEAR);
