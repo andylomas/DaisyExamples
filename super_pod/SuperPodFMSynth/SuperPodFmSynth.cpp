@@ -179,7 +179,7 @@ int main(void)
     param[8].Init(sp.knob[8], 0.2f, 20.0f, Parameter::LOGARITHMIC);   // LFO frequency
     param[9].Init(sp.knob[9], 0.0f, 1.0f, Parameter::LINEAR);       // LFO depth
     param[10].Init(sp.knob[10], 0.001f, 0.995f, Parameter::LINEAR);  // LFO bias
-    param[11].Init(sp.knob[11], 0.9f, 0.1f, Parameter::LINEAR);      // LFO gai
+    param[11].Init(sp.knob[11], 0.9f, 0.1f, Parameter::LINEAR);      // LFO gain
 
     // Initialise the FM oscillator
     fm_synth.Init(sample_rate);
