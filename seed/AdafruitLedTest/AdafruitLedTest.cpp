@@ -21,11 +21,12 @@ int main(void)
     hardware.Configure();
     hardware.Init();
 
-    dsy_gpio_pin led_data, led_clock;
+    dsy_gpio_pin led_data_pin, led_clock_pin;
 
-    led_data = hardware.GetPin(1);
-    led_clock = hardware.GetPin(2); 
-    led_controller.Init(led_data, led_clock);
+    led_clock_pin = hardware.GetPin(1);
+    led_data_pin = hardware.GetPin(2); 
+    led_controller.Init(led_data_pin, led_clock_pin);
+    //led_controller.InitSpi();
     led_controller.SetGlobalBrightness(1.0, 0.25, 0.4);
 
     led_controller.Clear();
