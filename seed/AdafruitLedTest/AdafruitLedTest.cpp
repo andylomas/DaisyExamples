@@ -25,8 +25,8 @@ int main(void)
 
     led_clock_pin = hardware.GetPin(1);
     led_data_pin = hardware.GetPin(2); 
-    led_controller.Init(led_data_pin, led_clock_pin);
-    //led_controller.InitSpi();
+    //led_controller.Init(led_data_pin, led_clock_pin);
+    led_controller.InitSpi();
     led_controller.SetGlobalBrightness(1.0, 0.25, 0.4);
 
     led_controller.Clear();
@@ -48,9 +48,10 @@ int main(void)
 
         for (int i = 0; i < 4; i ++)
         {
-            //led_controller.SetFloat(i, r, g, b);
+            led_controller.SetFloat(i, r, g, b);
             //led_controller.SetFloat(i, 1, 1, 1);
-            led_controller.SetValue(i, val);
+            //led_controller.SetValue(i, val);
+            //led_controller.Set(i, 0, 0, 1);
         }
         
         led_controller.Update();
@@ -58,6 +59,6 @@ int main(void)
         val = (val + 1) % 8;
 
         // Wait 500ms
-        dsy_system_delay(500);
+        dsy_system_delay(5);
     }
 }

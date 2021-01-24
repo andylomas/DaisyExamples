@@ -18,24 +18,49 @@ int main(void)
     oled_pins[OledDisplay::DATA_COMMAND] = hw.GetPin(9);
     oled_pins[OledDisplay::RESET]        = hw.GetPin(30);
     display.Init(oled_pins);
+
     message_idx = 0;
     char strbuff[128];
+    int i = 0;
     while(1)
     {
-        dsy_system_delay(500);
-        switch(message_idx)
-        {
-            case 0: sprintf(strbuff, "Testing. . ."); break;
-            case 1: sprintf(strbuff, "Daisy. . ."); break;
-            case 2: sprintf(strbuff, "1. . ."); break;
-            case 3: sprintf(strbuff, "2. . ."); break;
-            case 4: sprintf(strbuff, "3. . ."); break;
-            default: break;
-        }
-        message_idx = (message_idx + 1) % 5;
-        display.Fill(true);
+        dsy_system_delay(10);
+        // switch(message_idx)
+        // {
+        //     case 0: sprintf(strbuff, "Testing. . ."); break;
+        //     case 1: sprintf(strbuff, "Daisy. . ."); break;
+        //     case 2: sprintf(strbuff, "1. . ."); break;
+        //     case 3: sprintf(strbuff, "2. . ."); break;
+        //     case 4: sprintf(strbuff, "3. . ."); break;
+        //     default: break;
+        // }
+        // message_idx = (message_idx + 1) % 5;
+        display.Fill(false);
+        // display.SetCursor(0, 0);
+        // display.WriteString(strbuff, Font_6x8, true);
+
+        // display.SetCursor(0, 9);
+        // display.WriteString(strbuff, Font_7x10, true);
+
+        // display.SetCursor(0, 20);
+        // display.WriteString(strbuff, Font_11x18, true);
+
+        // display.SetCursor(0, 37);
+        // display.WriteString(strbuff, Font_16x26, true);
+
+        display.DrawCircle(64, 64, i % 64 + 1, true);
+
+        sprintf(strbuff, "%d", i);
         display.SetCursor(0, 0);
-        display.WriteString(strbuff, Font_11x18, false);
-        display.Update();
+        display.WriteString(strbuff, Font_7x10, true);
+    
+        //uint8_t flags = display.CalcBufferChecksums();
+        //sprintf(strbuff, "%d", flags);
+        //display.SetCursor(0, 12);
+        //display.WriteString(strbuff, Font_7x10, true);
+
+        i++;
+
+        display.DirtyUpdate();
     }
 }
