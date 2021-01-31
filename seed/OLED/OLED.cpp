@@ -16,6 +16,7 @@ int main(void)
 
     oled_pins[OledDisplay::DATA_COMMAND] = hw.GetPin(9);
     oled_pins[OledDisplay::RESET]        = hw.GetPin(30);
+    dsy_system_delay(1000);
     display.Init(oled_pins);
     display.InitSmartUpdate();
 
