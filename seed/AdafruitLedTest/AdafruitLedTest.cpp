@@ -1,5 +1,5 @@
 #include "daisy_seed.h"
-#include "myUtils/AdafruitPwmLedController.h"
+#include "myUtils/AdafruitLedController.h"
 
 // Use the daisy namespace to prevent having to type
 // daisy:: before all libdaisy functions
@@ -7,7 +7,7 @@ using namespace daisy;
 
 // Declare a DaisySeed object called hardware
 DaisySeed hardware;
-AdafruitPwmLedController led_controller;
+AdafruitLedController led_controller;
 
 int main(void)
 {
@@ -21,13 +21,17 @@ int main(void)
     hardware.Configure();
     hardware.Init();
 
-    dsy_gpio_pin led_data_pin, led_clock_pin;
-
-    led_clock_pin = hardware.GetPin(1);
-    led_data_pin = hardware.GetPin(2); 
-    //led_controller.Init(led_data_pin, led_clock_pin);
-    led_controller.InitSpi();
+    dsy_gpio_pin led_clock_pin = hardware.GetPin(1);
+    dsy_gpio_pin led_data_pin = hardware.GetPin(2); 
+    led_controller.Init(led_data_pin, led_clock_pin);
+    //led_controller.InitSpi();
     led_controller.SetGlobalBrightness(1.0, 0.25, 0.4);
+
+    dsy_gpio led_cs;
+    led_cs.pin = hardware.GetPin(11);
+    led_cs.mode = DSY_GPIO_MODE_OUTPUT_PP;
+    dsy_gpio_init(&led_cs);
+    dsy_gpio_write(&led_cs, false);
 
     led_controller.Clear();
 
@@ -49,12 +53,15 @@ int main(void)
         for (int i = 0; i < 4; i ++)
         {
             led_controller.SetFloat(i, r, g, b);
-            //led_controller.SetFloat(i, 1, 1, 1);
+            //led_controller.SetFloat(i, 0.5, 0.5, 0.5);
             //led_controller.SetValue(i, val);
-            //led_controller.Set(i, 0, 0, 1);
+            //led_controller.Set(i, 1, 1, 1);
         }
         
+        dsy_gpio_write(&led_cs, true);
         led_controller.Update();
+        dsy_gpio_write(&led_cs, false);
+
         phase += 0.01f;
         val = (val + 1) % 8;
 
