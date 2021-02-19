@@ -125,24 +125,24 @@ int main(void)
         float g = 0.5f + 0.5f * sinf(phase + 2.094f);
         float b = 0.5f + 0.5f * sinf(phase - 2.094f);
 
-        for (int i = 0; i < 4; i ++)
-        {
-            //led_controller.SetFloat(i, r, g, b);
-            //led_controller.SetFloat(i, 0.5, 0.5, 0.5);
-            led_controller.SetValue(i, val);
-            //led_controller.Set(i, 1, 0, 0);
-        }
+        // for (int i = 0; i < 4; i ++)
+        // {
+        //     //led_controller.SetFloat(i, r, g, b);
+        //     //led_controller.SetFloat(i, 0.5, 0.5, 0.5);
+        //     led_controller.SetValue(i, val);
+        //     //led_controller.Set(i, 1, 0, 0);
+        // }
 
-        // led_controller.SetFloat(0, r, g, b);
-        // led_controller.SetFloat(1, b, r, g);
-        // led_controller.SetFloat(2, g, b, r);
-        // led_controller.SetFloat(3, r, g, b);
+        led_controller.SetFloat(0, r, g, b);
+        led_controller.SetFloat(1, b, r, g);
+        led_controller.SetFloat(2, g, b, r);
+        led_controller.SetFloat(3, r, g, b);
         
         //dsy_gpio_write(&led_controller_cs, true);
         led_controller.Update();
         //dsy_gpio_write(&led_controller_cs, false);
 
-        phase += 0.01f;
+        phase += 0.05f;
         val++;
 
         // OLED display
