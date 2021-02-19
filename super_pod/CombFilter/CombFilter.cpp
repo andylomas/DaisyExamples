@@ -49,7 +49,7 @@ void AudioCallback(float **in, float **out, size_t size)
     osc.SetFreq(freq);
     osc.SetAmp(osc_amp_param.Process());
 
-    if (sp.buttons[0].RisingEdge()) feedbackMode = !feedbackMode;
+    if (sp.button[0].RisingEdge()) feedbackMode = !feedbackMode;
 
     // Audio Loop
     for(size_t i = 0; i < size; i ++)
@@ -67,9 +67,11 @@ void AudioCallback(float **in, float **out, size_t size)
         else
             comb_dl.Write(dry);
 
+        float sig = comb_mix * wet + (1.0f - comb_mix) * dry;
+
         // Process outputs
-        out[1][i] = wet;
-        out[0][i] = dry;
+        out[1][i] = sig;
+        out[0][i] = sig;
     }
 }
 

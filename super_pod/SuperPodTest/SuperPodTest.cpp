@@ -37,7 +37,7 @@ static void AudioCallback(float **in, float **out, size_t size)
     }
 
     osc.SetFreq(mtof(basenote
-                    + 2 * (sp.buttons[0].Pressed() + 2 * sp.buttons[1].Pressed() + 4 * sp.buttons[2].Pressed() + 8 * sp.buttons[3].Pressed())
+                    + 2 * (sp.button[0].Pressed() + 2 * sp.button[1].Pressed() + 4 * sp.button[2].Pressed() + 8 * sp.button[3].Pressed())
                     + 2 * (sp.switches[0].Pressed() + 2 * sp.switches[1].Pressed() + 4 * sp.switches[2].Pressed() + 8 * sp.switches[3].Pressed())));
 
     // Audio Loop

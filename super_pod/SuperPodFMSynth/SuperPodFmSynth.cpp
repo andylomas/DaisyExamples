@@ -46,25 +46,25 @@ static void AudioCallback(float **in, float **out, size_t size)
     }
 
     // Buttons used to select which operator is controlled by encoder 1
-    if (sp.buttons[0].RisingEdge())
+    if (sp.button[0].RisingEdge())
     {
         encoder1_operator = 0;
         sp.encoder[1].SetValue(fm_synth.op[0].Waveform());
     }
 
-    if (sp.buttons[1].RisingEdge())
+    if (sp.button[1].RisingEdge())
     {
         encoder1_operator = 1;
         sp.encoder[1].SetValue(fm_synth.op[1].Waveform());
     }
 
-    if (sp.buttons[2].RisingEdge())
+    if (sp.button[2].RisingEdge())
     {
         encoder1_operator = 2;
         sp.encoder[1].SetValue(fm_synth.op[2].Waveform());
     }
 
-    if (sp.buttons[3].RisingEdge())
+    if (sp.button[3].RisingEdge())
     {
         encoder1_operator = 3;
         sp.encoder[1].SetValue(fm_synth.op[3].Waveform());

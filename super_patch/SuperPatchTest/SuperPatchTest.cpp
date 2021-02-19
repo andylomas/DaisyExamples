@@ -111,22 +111,22 @@ int main(void)
         sp.display.WriteString(strbuff, Font_7x10, true);
         count++;
 
-        sprintf(strbuff, "Encoder0: %d", sp.encoder[0].Value());
+        sprintf(strbuff, "Pot0: %d.%d", (int)(10 * sp.knob[0].Value()) / 100, (int)(100 * sp.knob[0].Value()) % 100);
         sp.display.SetCursor(0, 12);
         sp.display.WriteString(strbuff, Font_7x10, true);
         count++;
 
-        sprintf(strbuff, "Encoder1: %d", sp.encoder[1].Value());
+        sprintf(strbuff, "Pot1: %d.%d", (int)(10 * sp.knob[1].Value()) / 100, (int)(100 * sp.knob[1].Value()) % 100);
         sp.display.SetCursor(0, 24);
         sp.display.WriteString(strbuff, Font_7x10, true);
         count++;
-
-        sprintf(strbuff, "Pot0: %f", sp.knob[0].Value());
+        
+        sprintf(strbuff, "Encoder0: %d", sp.encoder[0].Value());
         sp.display.SetCursor(0, 36);
         sp.display.WriteString(strbuff, Font_7x10, true);
         count++;
 
-        sprintf(strbuff, "Pot1: %f", sp.knob[1].Value());
+        sprintf(strbuff, "Encoder1: %d", sp.encoder[1].Value());
         sp.display.SetCursor(0, 48);
         sp.display.WriteString(strbuff, Font_7x10, true);
         count++;

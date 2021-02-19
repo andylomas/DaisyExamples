@@ -52,7 +52,7 @@ void AudioCallback(float **in, float **out, size_t size)
     int lfo_waveform = sp.encoder[1].Value();
     flanger_lfo.SetWaveform(waveforms[lfo_waveform]);
 
-    if(sp.buttons[2].RisingEdge()) bypass = !bypass;
+    if(sp.button[2].RisingEdge()) bypass = !bypass;
 
     flanger_rate = flanger_rate_param.Process();
     flanger_delay = flanger_delay_param.Process();
@@ -63,8 +63,8 @@ void AudioCallback(float **in, float **out, size_t size)
     flanger_lfo.SetFreq(flanger_rate);
 
     // convert MIDI to frequency and multiply by octave size
-    if(sp.buttons[0].RisingEdge()) octave--;
-    if(sp.buttons[1].RisingEdge()) octave++;
+    if(sp.button[0].RisingEdge()) octave--;
+    if(sp.button[1].RisingEdge()) octave++;
     octave = DSY_CLAMP(octave, -3, 4);
     float freq = mtof(60.0 + (octave * 12));
     osc.SetFreq(freq);
