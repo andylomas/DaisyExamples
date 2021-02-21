@@ -33,21 +33,21 @@ static void AudioCallback(float **in, float **out, size_t size)
     float basenote = 10.0;
     for (int i = 0; i < 8; i++)
     {
-        basenote += 4 * i * sp.knob[i].Value();
+        basenote += 4 * (i + 1) * sp.knob[i].Value();
     }
 
-    // Test DAC
-    static int dacVal1 = 0;
-    static int dacVal2 = 0;
-    dacVal1 += 1;
-    dacVal2 += 16;
-    if (dacVal1 >= 4096) dacVal1 = 0;
-    if (dacVal2 >= 4096) dacVal2 = 0;
-    dsy_dac_write(DSY_DAC_CHN1, dacVal1);
-    dsy_dac_write(DSY_DAC_CHN2, dacVal2);
+    // Test banana analog output
+    static float dacVal1 = 0.f;
+    static float dacVal2 = 0.f;
+    dacVal1 += 0.00025f;
+    dacVal2 += 0.004f;
+    if (dacVal1 > 1.0f) dacVal1 = 0.f;
+    if (dacVal2 > 1.0f) dacVal2 = 0.f;
+    sp.banana[0].SetValue(dacVal1);
+    sp.banana[2].SetValue(dacVal2);
 
-    // Test ADC
-    basenote += 4 * sp.knob[8].Value() + 8 * sp.knob[9].Value();
+    // Test banana analog input
+    basenote += 4 * sp.banana[1].Value() + 8 * sp.banana[3].Value();
 
     osc.SetFreq(mtof(basenote + 2 * (sp.button[0].Pressed() + 2 * sp.button[1].Pressed())));
 
@@ -91,16 +91,9 @@ int main(void)
     sp.StartAdc();
     sp.StartAudio(AudioCallback);
 
-    // Start DAC
-    //sp.StartDac();
-    dsy_dac_init(&sp.seed.dac_handle, DSY_DAC_CHN_BOTH);
-    dsy_dac_write(DSY_DAC_CHN1, 0);
-    dsy_dac_write(DSY_DAC_CHN2, 0);
-
     // Loop forever
     int count = 0;
     char strbuff[128];
-    float analogVal = 0.0f;
     while(1) {
         sp.SetOnboardLed(count % 2);
 
