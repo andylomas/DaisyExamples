@@ -33,8 +33,21 @@ static void AudioCallback(float **in, float **out, size_t size)
     float basenote = 10.0;
     for (int i = 0; i < 8; i++)
     {
-        basenote += 4.0 * sp.knob[i].Value();
+        basenote += 4 * i * sp.knob[i].Value();
     }
+
+    // Test DAC
+    static int dacVal1 = 0;
+    static int dacVal2 = 0;
+    dacVal1 += 1;
+    dacVal2 += 16;
+    if (dacVal1 >= 4096) dacVal1 = 0;
+    if (dacVal2 >= 4096) dacVal2 = 0;
+    dsy_dac_write(DSY_DAC_CHN1, dacVal1);
+    dsy_dac_write(DSY_DAC_CHN2, dacVal2);
+
+    // Test ADC
+    basenote += 4 * sp.knob[8].Value() + 8 * sp.knob[9].Value();
 
     osc.SetFreq(mtof(basenote + 2 * (sp.button[0].Pressed() + 2 * sp.button[1].Pressed())));
 
@@ -52,8 +65,19 @@ int main(void)
 {
     float samplerate;
 
+    // Configure the Banana plugs
+    BananaConfig banana_config[NUM_BANANAS];
+    banana_config[0].mode = ANALOG_OUTPUT;
+    banana_config[1].mode = ANALOG_INPUT;
+    banana_config[2].mode = ANALOG_OUTPUT;
+    banana_config[3].mode = ANALOG_INPUT;
+    banana_config[4].mode = SERIAL_OUTPUT;
+    banana_config[4].baud_rate = 115200;
+    banana_config[5].mode = SERIAL_INPUT;
+    banana_config[5].baud_rate = 115200;
+
     // Init everything
-    sp.Init();
+    sp.Init(banana_config);
     samplerate = sp.AudioSampleRate();
 
     sp.encoder[0].SetRange(0, 23);
@@ -67,9 +91,16 @@ int main(void)
     sp.StartAdc();
     sp.StartAudio(AudioCallback);
 
+    // Start DAC
+    //sp.StartDac();
+    dsy_dac_init(&sp.seed.dac_handle, DSY_DAC_CHN_BOTH);
+    dsy_dac_write(DSY_DAC_CHN1, 0);
+    dsy_dac_write(DSY_DAC_CHN2, 0);
+
     // Loop forever
     int count = 0;
     char strbuff[128];
+    float analogVal = 0.0f;
     while(1) {
         sp.SetOnboardLed(count % 2);
 
@@ -98,7 +129,6 @@ int main(void)
         sp.SetLedFloat(3, r3, g3, b3);
 
         sp.UpdateLeds();
-
 
         // OLED display
         sp.display.Fill(false);
@@ -132,7 +162,6 @@ int main(void)
         count++;
 
         sp.display.Update();
-
 
         dsy_system_delay(20);
     }
