@@ -43,11 +43,11 @@ static void AudioCallback(float **in, float **out, size_t size)
     dacVal2 += 0.004f;
     if (dacVal1 > 1.0f) dacVal1 = 0.f;
     if (dacVal2 > 1.0f) dacVal2 = 0.f;
-    sp.banana[0].SetValue(dacVal1);
-    sp.banana[2].SetValue(dacVal2);
+    sp.banana[0].AnalogOutput(dacVal1);
+    sp.banana[2].AnalogOutput(dacVal2);
 
     // Test banana analog input
-    basenote += 4 * sp.banana[1].Value() + 8 * sp.banana[3].Value();
+    basenote += 4 * sp.banana[1].AnalogInput() + 8 * sp.banana[3].AnalogInput();
 
     osc.SetFreq(mtof(basenote + 2 * (sp.button[0].Pressed() + 2 * sp.button[1].Pressed())));
 
@@ -134,12 +134,12 @@ int main(void)
         sp.display.WriteString(strbuff, Font_7x10, true);
         count++;
 
-        sprintf(strbuff, "Pot0: %d.%d", (int)(10 * sp.knob[0].Value()) / 100, (int)(100 * sp.knob[0].Value()) % 100);
+        sprintf(strbuff, "Pot4: %d.%d", (int)(10 * sp.knob[4].Value()) / 100, (int)(100 * sp.knob[4].Value()) % 100);
         sp.display.SetCursor(0, 12);
         sp.display.WriteString(strbuff, Font_7x10, true);
         count++;
 
-        sprintf(strbuff, "Pot1: %d.%d", (int)(10 * sp.knob[1].Value()) / 100, (int)(100 * sp.knob[1].Value()) % 100);
+        sprintf(strbuff, "Pot7: %d.%d", (int)(10 * sp.knob[7].Value()) / 100, (int)(100 * sp.knob[7].Value()) % 100);
         sp.display.SetCursor(0, 24);
         sp.display.WriteString(strbuff, Font_7x10, true);
         count++;
