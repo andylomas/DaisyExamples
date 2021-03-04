@@ -11,10 +11,11 @@ public:
     enum
     {
         WAVE_SIN,
+        WAVE_BHASKARA_SIN,
         WAVE_TRI,
-        WAVE_SQUARE,
         WAVE_SAW,
-        WAVE_RAMP
+        WAVE_RAMP,
+        WAVE_SQUARE
      };
 
     void Init(const float sample_rate);

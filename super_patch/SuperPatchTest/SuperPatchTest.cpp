@@ -97,6 +97,15 @@ int main(void)
     while(1) {
         sp.SetOnboardLed(count % 2);
 
+
+        // Send serial message
+        sp.SerialSend("ABCDEFGH", 8);
+
+
+        // Receive serial message
+        int bytes_received = sp.SerialReceive();
+
+
         // Adafruit LED Controller
         float r0 = sp.knob[4].Value();
         float g0 = sp.knob[0].Value();
@@ -123,39 +132,44 @@ int main(void)
 
         sp.UpdateLeds();
 
+
         // OLED display
         sp.display.Fill(false);
         sp.display.DrawCircle(64, 64, count % 32, true);
         sp.display.DrawCircle(64, 64, count % 32 + 32, true);
         sp.display.DrawCircle(64, 64, count % 32 + 64, true);
 
-        sprintf(strbuff, "%d", count);
-        sp.display.SetCursor(0, 0);
-        sp.display.WriteString(strbuff, Font_7x10, true);
-        count++;
+        // sprintf(strbuff, "%d", count);
+        // sp.display.SetCursor(0, 0);
+        // sp.display.WriteString(strbuff, Font_7x10, true);
 
-        sprintf(strbuff, "Pot4: %d.%d", (int)(10 * sp.knob[4].Value()) / 100, (int)(100 * sp.knob[4].Value()) % 100);
+        // sprintf(strbuff, "Pot4: %d.%d", (int)(10 * sp.knob[4].Value()) / 100, (int)(100 * sp.knob[4].Value()) % 100);
+        // sp.display.SetCursor(0, 12);
+        // sp.display.WriteString(strbuff, Font_7x10, true);
+
+        // sprintf(strbuff, "Pot7: %d.%d", (int)(10 * sp.knob[7].Value()) / 100, (int)(100 * sp.knob[7].Value()) % 100);
+        // sp.display.SetCursor(0, 24);
+        // sp.display.WriteString(strbuff, Font_7x10, true);
+        
+        // sprintf(strbuff, "Encoder0: %d", sp.encoder[0].Value());
+        // sp.display.SetCursor(0, 36);
+        // sp.display.WriteString(strbuff, Font_7x10, true);
+
+        // sprintf(strbuff, "Encoder1: %d", sp.encoder[1].Value());
+        // sp.display.SetCursor(0, 48);
+        // sp.display.WriteString(strbuff, Font_7x10, true);
+
+        sprintf(strbuff, "Serial received %d", bytes_received);
         sp.display.SetCursor(0, 12);
         sp.display.WriteString(strbuff, Font_7x10, true);
-        count++;
-
-        sprintf(strbuff, "Pot7: %d.%d", (int)(10 * sp.knob[7].Value()) / 100, (int)(100 * sp.knob[7].Value()) % 100);
-        sp.display.SetCursor(0, 24);
-        sp.display.WriteString(strbuff, Font_7x10, true);
-        count++;
-        
-        sprintf(strbuff, "Encoder0: %d", sp.encoder[0].Value());
-        sp.display.SetCursor(0, 36);
-        sp.display.WriteString(strbuff, Font_7x10, true);
-        count++;
-
-        sprintf(strbuff, "Encoder1: %d", sp.encoder[1].Value());
-        sp.display.SetCursor(0, 48);
-        sp.display.WriteString(strbuff, Font_7x10, true);
-        count++;
+        if (bytes_received > 0)
+        {
+            sp.display.SetCursor(0, 24);
+            sp.display.WriteBuffer(sp.serial_buffer, bytes_received, Font_7x10, true);
+        }
 
         sp.display.Update();
-
         dsy_system_delay(20);
+        count++;
     }
 }

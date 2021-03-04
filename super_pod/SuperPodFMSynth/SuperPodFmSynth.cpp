@@ -15,6 +15,7 @@ FMSynth fm_synth;
 Oscillator lfo_osc;
 float sample_rate;
 int encoder1_operator;
+dsy_gpio pin_timing;
 
 #define NUM_FREQ_MULT_VALUES 21
 const float freq_mult_values[] = {0.0625f, 0.0833333f, 0.125f, 0.166667f, 0.25f, 0.333333f, 0.5f, 0.666667f, 0.75f, 0.8f, 1.0f, 1.25f, 1.33333f, 1.5f, 2.0f, 3.0f, 4.0f, 6.0f, 8.0f, 12.0f, 16.0f};
@@ -23,6 +24,8 @@ Parameter param[12];
 
 static void AudioCallback(float **in, float **out, size_t size)
 {
+    dsy_gpio_write(&pin_timing, 1);
+
     float carrier_freq;
     float lfo_depth;
     float lfo_bias;
@@ -39,35 +42,44 @@ static void AudioCallback(float **in, float **out, size_t size)
         fm_synth.SetOperatorTopology(sp.encoder[0].Value());
     }
 
-    // Encoder 1 used to set waveform of the operators
+    // // Encoder 1 used to set waveform of the operators
+    // if (sp.encoder[1].ValueChanged())
+    // {
+    //     fm_synth.op[encoder1_operator].SetWaveform(sp.encoder[1].Value());
+    // }
+
+    // // Buttons used to select which operator is controlled by encoder 1
+    // if (sp.button[0].RisingEdge())
+    // {
+    //     encoder1_operator = 0;
+    //     sp.encoder[1].SetValue(fm_synth.op[0].Waveform());
+    // }
+
+    // if (sp.button[1].RisingEdge())
+    // {
+    //     encoder1_operator = 1;
+    //     sp.encoder[1].SetValue(fm_synth.op[1].Waveform());
+    // }
+
+    // if (sp.button[2].RisingEdge())
+    // {
+    //     encoder1_operator = 2;
+    //     sp.encoder[1].SetValue(fm_synth.op[2].Waveform());
+    // }
+
+    // if (sp.button[3].RisingEdge())
+    // {
+    //     encoder1_operator = 3;
+    //     sp.encoder[1].SetValue(fm_synth.op[3].Waveform());
+    // }
+
+    // Encoder 1 used to set the operator of all waveforms
     if (sp.encoder[1].ValueChanged())
     {
-        fm_synth.op[encoder1_operator].SetWaveform(sp.encoder[1].Value());
-    }
-
-    // Buttons used to select which operator is controlled by encoder 1
-    if (sp.button[0].RisingEdge())
-    {
-        encoder1_operator = 0;
-        sp.encoder[1].SetValue(fm_synth.op[0].Waveform());
-    }
-
-    if (sp.button[1].RisingEdge())
-    {
-        encoder1_operator = 1;
-        sp.encoder[1].SetValue(fm_synth.op[1].Waveform());
-    }
-
-    if (sp.button[2].RisingEdge())
-    {
-        encoder1_operator = 2;
-        sp.encoder[1].SetValue(fm_synth.op[2].Waveform());
-    }
-
-    if (sp.button[3].RisingEdge())
-    {
-        encoder1_operator = 3;
-        sp.encoder[1].SetValue(fm_synth.op[3].Waveform());
+        for (int i = 0; i < 4; i++)
+        {
+            fm_synth.op[i].SetWaveform(sp.encoder[1].Value());
+        }
     }
 
     // Switches used to changed from continous to discrete frequency multipliers
@@ -122,6 +134,7 @@ static void AudioCallback(float **in, float **out, size_t size)
     lfo_gain = param[11].Process();
   
     // Audio Loop
+    dsy_gpio_write(&pin_timing, 1);
     for(size_t i = 0; i < size; i ++)
     {
         // First get LFO as value in range 0-1
@@ -135,6 +148,7 @@ static void AudioCallback(float **in, float **out, size_t size)
             out[chn][i] = sig;
         }
     }
+    dsy_gpio_write(&pin_timing, 0);
 }
 
 int main(void)
@@ -192,6 +206,11 @@ int main(void)
     lfo_osc.Init(sample_rate);
     lfo_osc.SetWaveform(Oscillator::WAVE_SIN);
     lfo_osc.SetAmp(0.5f);
+
+    // Setup timing test output pin
+    pin_timing.pin = sp.seed.GetPin(14);
+    pin_timing.mode = DSY_GPIO_MODE_OUTPUT_PP;
+    dsy_gpio_init(&pin_timing);
 
     // start callbacks
     sp.StartAdc();

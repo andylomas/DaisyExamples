@@ -7,6 +7,21 @@
 
 #define frac(f) f - floor(f)
 
+float bhaskara_normalized_sin(float x)
+{
+    float y = 2.0f * x;
+    if (y <= 1.0f)
+    {
+        float z = y * (1.f - y);
+        return (16.f * z) / (5.f - 4.f * z);
+    }
+    else
+    {
+        float z = (y - 1.f) * (2.f - y);
+        return -(16.f * z) / (5.f - 4.f * z);        
+    }
+}
+
 void FMOperator::Init(const float sample_rate)
 {
     sample_rate_recip_ = 1.0f / sample_rate;
@@ -24,6 +39,11 @@ float FMOperator::RawWaveformOutput(const float phase_offset)
     {
         case WAVE_SIN:
             out = sinf(TAU_F * (phase_ + phase_offset));
+            break;
+
+        case WAVE_BHASKARA_SIN:
+            p = frac(phase_ + phase_offset);
+            out = bhaskara_normalized_sin(p);
             break;
             
         case WAVE_TRI:
