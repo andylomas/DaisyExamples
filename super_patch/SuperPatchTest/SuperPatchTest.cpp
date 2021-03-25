@@ -159,14 +159,22 @@ int main(void)
         // sp.display.SetCursor(0, 48);
         // sp.display.WriteString(strbuff, Font_7x10, true);
 
-        sprintf(strbuff, "Serial received %d", bytes_received);
+        // sprintf(strbuff, "Serial received %d", bytes_received);
+        // sp.display.SetCursor(0, 12);
+        // sp.display.WriteString(strbuff, Font_7x10, true);
+        // if (bytes_received > 0)
+        // {
+        //     sp.display.SetCursor(0, 24);
+        //     sp.display.WriteBuffer(sp.serial_buffer, bytes_received, Font_7x10, true);
+        // }
+
+        sprintf(strbuff, "Encoder 0 %d", sp.encoder[0].CurState());
+        sp.display.SetCursor(0, 0);
+        sp.display.WriteString(strbuff, Font_7x10, true);
+
+        sprintf(strbuff, "Encoder 1 %d", sp.encoder[1].CurState());
         sp.display.SetCursor(0, 12);
         sp.display.WriteString(strbuff, Font_7x10, true);
-        if (bytes_received > 0)
-        {
-            sp.display.SetCursor(0, 24);
-            sp.display.WriteBuffer(sp.serial_buffer, bytes_received, Font_7x10, true);
-        }
 
         sp.display.Update();
         dsy_system_delay(20);

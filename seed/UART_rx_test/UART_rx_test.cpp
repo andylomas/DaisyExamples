@@ -14,18 +14,18 @@ MyUartHandler  uart;
 int main(void)
 {
     // Init
-    float samplerate;
     hw.Configure();
     hw.Init();
 
     dsy_system_delay(250);
-    uart.Init(SERIAL_USART1, 115200);
+    //uart.Init(SERIAL_USART1, 115200);
     //uart.Init(SERIAL_USART1, 230400);
     //uart.Init(SERIAL_USART1, 230400);
     //uart.Init(SERIAL_USART1, 460800);
-    //uart.Init(SERIAL_USART1, 921600); // Highest standard baud rate for PicoScript 
+    uart.Init(SERIAL_USART1, 921600); // Highest standard baud rate for PicoScript 
     //uart.Init(SERIAL_USART1, 1843200);
     //uart.Init(SERIAL_USART1, 3686400); // Highest baud rate for tx on USART1
+
 
     bool led_state;
     led_state = true;
@@ -59,13 +59,16 @@ int main(void)
             uart.PollTx(&val, 1);
         }
 
-        if(!uart.RxActive())
-        {
-            uart.FlushRx();
-            uart.StartRx();
-        }
+        // if(!uart.RxActive())
+        // {
+        //     uart.FlushRx();
+        //     uart.StartRx();
+        // }
+
+        //led_state = !led_state;
+        //hw.SetLed(led_state);
 
         // Wait 200ms
-        //dsy_system_delay(1);
+        //dsy_system_delay(500);
     }
 }
