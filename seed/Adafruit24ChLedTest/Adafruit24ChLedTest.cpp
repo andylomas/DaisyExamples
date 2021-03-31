@@ -25,7 +25,7 @@ int main(void)
     dsy_gpio_pin led_clock_pin = hardware.GetPin(2);
     dsy_gpio_pin led_latch_pin = hardware.GetPin (3);
     led_controller.Init(led_data_pin, led_clock_pin, led_latch_pin);
-    led_controller.SetGlobalBrightness(1.0, 0.25, 0.4);
+    led_controller.SetGlobalBrightness(1.0, 0.15, 0.2);
     led_controller.SetGamma(2.8);
 
     led_controller.Clear();
@@ -62,6 +62,6 @@ int main(void)
         val = (val + 1) % 8;
 
         // Wait 500ms
-        dsy_system_delay(5);
+        dsy_system_delay(10);
     }
 }
